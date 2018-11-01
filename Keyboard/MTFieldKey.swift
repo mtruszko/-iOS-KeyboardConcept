@@ -11,8 +11,8 @@ import UIKit
 class MTFieldKey: NSObject {
 
     var letter:String = ""
-    var point1 = CGPointMake(0, 0)
-    var point2 = CGPointMake(0, 0)
+    var point1 = CGPoint(x:0, y:0)
+    var point2 = CGPoint(x:0, y:0)
     var tap = ""
     var line1 = ""
     var line2 = ""

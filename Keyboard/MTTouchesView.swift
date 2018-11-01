@@ -39,7 +39,7 @@ class MTTouchesView: UIView {
         
         for filedKey in keyboard.arrayFileds {
             
-            addSubview(makeTriangleFieldView(filedKey))
+            addSubview(makeTriangleFieldView(filedKey: filedKey))
         }
         
         circleView = MTCircleView.init(parentBounds: bounds)
@@ -74,23 +74,23 @@ class MTTouchesView: UIView {
     var currentTouchedTriangleView:MTTriangleFieldView?
     var stringWord:String = ""
 
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesBegan(touches, withEvent: event)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
         
         if touches.count != 1 {
             
             return
         }
         
-        if circleView.containPoint(touches.first!.locationInView(self)) {
+        if circleView.containPoint(point: touches.first!.location(in: self)) {
             
             beginFromCircle = true
             return
         }
         
-        if let touchedView:MTTriangleFieldView = touchedTriangleView(touches.first!) {
+        if let touchedView:MTTriangleFieldView = touchedTriangleView(touch: touches.first!) {
             
-            touchedView.setSelected(true)
+            touchedView.setSelected(selected: true)
             arrayTouchedTriangleView.append(touchedView)
             
             currentTouchedTriangleView = touchedView
@@ -98,15 +98,15 @@ class MTTouchesView: UIView {
         }
     }
     
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesMoved(touches, withEvent: event)
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesMoved(touches, with: event)
         
         if touches.count != 1 {
         
             return
         }
         
-        if circleView.containPoint(touches.first!.locationInView(self)) {
+        if circleView.containPoint(point: touches.first!.location(in: self)) {
             
             if beginFromCircle {
                 
@@ -134,13 +134,13 @@ class MTTouchesView: UIView {
             return
         }
         
-        if let newTouchedView:MTTriangleFieldView = touchedTriangleView(touches.first!) {
+        if let newTouchedView:MTTriangleFieldView = touchedTriangleView(touch: touches.first!) {
             
-            newTouchedView.setSelected(true)
+            newTouchedView.setSelected(selected: true)
             
             if newTouchedView != arrayTouchedTriangleView.last {
                 
-                arrayTouchedTriangleView.last?.setSelected(false)
+                arrayTouchedTriangleView.last?.setSelected(selected: false)
                 arrayTouchedTriangleView.append(newTouchedView)
                 currentTouchedTriangleView = newTouchedView
                 showLetter()
@@ -149,15 +149,15 @@ class MTTouchesView: UIView {
         
     }
     
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesEnded(touches, withEvent: event)
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
         
         if touches.count != 1{
             
             return
         }
         
-        if circleView.containPoint(touches.first!.locationInView(self)) {
+        if circleView.containPoint(point: touches.first!.location(in: self)) {
             
             if beginFromCircle {
                 
@@ -169,7 +169,7 @@ class MTTouchesView: UIView {
                     
                 }
                 
-                sendLetter(stringWord + " ")
+                sendLetter(letter: stringWord + " ")
                 stringWord = ""
                 
             }
@@ -185,14 +185,14 @@ class MTTouchesView: UIView {
             return
         }
         
-        if let newTouchedView:MTTriangleFieldView = touchedTriangleView(touches.first!) {
+        if let newTouchedView:MTTriangleFieldView = touchedTriangleView(touch: touches.first!) {
             
-            newTouchedView.setSelected(false)
+            newTouchedView.setSelected(selected: false)
             
             if beginFromCircle {
                 
                 stringWord = stringWord + letterFromArray()
-                sendLetter(stringWord)
+                sendLetter(letter: stringWord)
                 stringWord = ""
                 clearAll()
                 showLetter()
@@ -206,8 +206,8 @@ class MTTouchesView: UIView {
         }
     }
     
-    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
-        super.touchesCancelled(touches, withEvent: event)
+    override func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?) {
+        super.touchesCancelled(touches!, with: event)
         
             clearAll()
     }
@@ -219,7 +219,7 @@ class MTTouchesView: UIView {
         
         for view in arrayTreiangleView {
             
-            if view.containPoint(touch.locationInView(self)) {
+            if view.containPoint(point: touch.location(in: self)) {
                 
                 return view
             }
@@ -232,11 +232,11 @@ class MTTouchesView: UIView {
         
         if currentTouchedTriangleView != nil {
             
-            circleView.setLetter(letterFromArray())
+            circleView.setLetter(letter: letterFromArray())
         }
         else {
             
-            circleView.setLetter("")
+            circleView.setLetter(letter: "")
         }
     }
     
@@ -246,17 +246,17 @@ class MTTouchesView: UIView {
             
             if beginFromCircle{
                 
-                sendLetter(" ")
+                sendLetter(letter: " ")
             }
             else {
                 
-                sendLetter((currentTouchedTriangleView?.field.tap)! + " ")
+                sendLetter(letter: (currentTouchedTriangleView?.field.tap)! + " ")
             }
 
             return
         }
         
-        sendLetter(letterFromArray())
+        sendLetter(letter: letterFromArray())
     }
     
     func letterFromArray() -> String {
@@ -311,14 +311,14 @@ class MTTouchesView: UIView {
     
     func sendLetter(letter: String) {
         
-        delegate!.touchesViewSending(self, stringToShow: letter)
+        delegate!.touchesViewSending(touchesView: self, stringToShow: letter)
     }
     
     func clearArrayTriangleViews() {
         
         for view in arrayTouchedTriangleView {
             
-            view.setSelected(false)
+            view.setSelected(selected: false)
         }
         
         arrayTouchedTriangleView.removeAll()

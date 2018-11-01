@@ -25,16 +25,16 @@ enum MTPropertyType: String {
 
 }
 
-class MTParser: NSObject, NSXMLParserDelegate {
+class MTParser: NSObject, XMLParserDelegate {
 
-    var xmlParser: NSXMLParser?
-    let path = NSBundle.mainBundle().pathForResource("ViewKey", ofType: "xml")
+    var xmlParser: XMLParser?
+    let path = Bundle.main.path(forResource: "ViewKey", ofType: "xml")
     
     func startParse(){
         
         if path != nil {
             
-            xmlParser = NSXMLParser(contentsOfURL: NSURL(fileURLWithPath: path!))
+            xmlParser = XMLParser(contentsOf: URL(fileURLWithPath: path!))
         }
         else {
             
@@ -55,7 +55,7 @@ class MTParser: NSObject, NSXMLParserDelegate {
     //helper for duplicate keys
     var currentPoint = String()
     
-    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+    func parser(parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         
         if let key = MTPropertyType(rawValue: elementName){
         
@@ -83,7 +83,7 @@ class MTParser: NSObject, NSXMLParserDelegate {
     var entryExternal = String()
     var entryTo = String()
     
-    func parser(parser: NSXMLParser, foundCharacters string: String) {
+    func parser(parser: XMLParser, foundCharacters string: String) {
        
         if let key = MTPropertyType(rawValue: currentParsedElement) {
             
@@ -123,7 +123,7 @@ class MTParser: NSObject, NSXMLParserDelegate {
         }
     }
     
-    func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+    func parser(parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
         if let key = MTPropertyType(rawValue: elementName) {
             
@@ -133,7 +133,7 @@ class MTParser: NSObject, NSXMLParserDelegate {
                 arrayKeyboard.append(currentKeyboard)
             case .Field:
         
-                let fieldKey = MTFieldKey.init(letter: entryTap, point1: CGPointMake(entryPoint1x.CGFloatValue, entryPoint1y.CGFloatValue), point2: CGPointMake(entryPoint2x.CGFloatValue, entryPoint2y.CGFloatValue), tap: entryTap, line1: entryLine1, line2: entryLine2, external: entryExternal, to: entryTo)
+                let fieldKey = MTFieldKey.init(letter: entryTap, point1: CGPoint(x: entryPoint1x.CGFloatValue, y: entryPoint1y.CGFloatValue), point2: CGPoint(x: entryPoint2x.CGFloatValue, y: entryPoint2y.CGFloatValue), tap: entryTap, line1: entryLine1, line2: entryLine2, external: entryExternal, to: entryTo)
                 currentKeyboard.arrayFileds.append(fieldKey)
                 
                 entryPoint1x = ""
@@ -156,12 +156,12 @@ class MTParser: NSObject, NSXMLParserDelegate {
         currentParsedElement = ""
     }
     
-    func parserDidEndDocument(parser: NSXMLParser) {
+    func parserDidEndDocument(parser: XMLParser) {
         
         print("FinishedParse")
     }
     
-    func parser(parser: NSXMLParser, parseErrorOccurred parseError: NSError) {
+    func parser(parser: XMLParser, parseErrorOccurred parseError: NSError) {
         print("ERROR \(parseError)")
     }
 }

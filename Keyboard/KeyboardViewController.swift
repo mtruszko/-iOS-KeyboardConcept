@@ -34,12 +34,12 @@ class KeyboardViewController: UIInputViewController, MTTouchesViewDeleagte {
         
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         if let myKeyboard = keybord {
             
-            touchesView.addKeyboard(myKeyboard)
+            touchesView.addKeyboard(keyboard: myKeyboard)
             touchesView.delegate = self
         }
     }
@@ -47,11 +47,11 @@ class KeyboardViewController: UIInputViewController, MTTouchesViewDeleagte {
     
     var customInterface: UIView!
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
         let nib = UINib(nibName: "KeyboardView", bundle: nil)
-        let objects = nib.instantiateWithOwner(self, options: nil)
+        let objects = nib.instantiate(withOwner: self, options: nil)
         
         customInterface = objects.last as! UIView
         customInterface.frame = view.bounds
@@ -88,25 +88,25 @@ class KeyboardViewController: UIInputViewController, MTTouchesViewDeleagte {
             
             if boolShift {
                 
-                shiftButton.selected = true
+                shiftButton.isSelected = true
             }
             else {
                 
-                shiftButton.selected = false
+                shiftButton.isSelected = false
             }
             
             
             
         default:
             
-            insertTextToKeyboard(stringLabel)
+            insertTextToKeyboard(text: stringLabel)
         }
        
     }
     
     func touchesViewSending(touchesView: MTTouchesView, stringToShow: String) {
         
-        insertTextToKeyboard(stringToShow)
+        insertTextToKeyboard(text: stringToShow)
     }
     
     func insertTextToKeyboard(text: String) {
@@ -115,7 +115,7 @@ class KeyboardViewController: UIInputViewController, MTTouchesViewDeleagte {
             
             textDocumentProxy.insertText(text.capitalizeFirst)
             boolShift = !boolShift
-            shiftButton.selected = false
+            shiftButton.isSelected = false
         }
         else {
             
@@ -126,18 +126,18 @@ class KeyboardViewController: UIInputViewController, MTTouchesViewDeleagte {
         
     func addNextKeyboardButton() {
         
-        self.nextKeyboardButton = MTButton(frame: CGRectZero)
+        self.nextKeyboardButton = MTButton(frame: CGRect.zero)
         
-        self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), forState: .Normal)
+        self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: .normal)
         self.nextKeyboardButton.sizeToFit()
         self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
         
-        self.nextKeyboardButton.addTarget(self, action: "advanceToNextInputMode", forControlEvents: .TouchUpInside)
+        self.nextKeyboardButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
         
         self.view.addSubview(self.nextKeyboardButton)
         
-        let nextKeyboardButtonLeftSideConstraint = NSLayoutConstraint(item: self.nextKeyboardButton, attribute: .Left, relatedBy: .Equal, toItem: self.view, attribute: .Left, multiplier: 1.0, constant: 0.0)
-        let nextKeyboardButtonBottomConstraint = NSLayoutConstraint(item: self.nextKeyboardButton, attribute: .Bottom, relatedBy: .Equal, toItem: self.view, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
+        let nextKeyboardButtonLeftSideConstraint = NSLayoutConstraint(item: self.nextKeyboardButton, attribute: .left, relatedBy: .equal, toItem: self.view, attribute: .left, multiplier: 1.0, constant: 0.0)
+        let nextKeyboardButtonBottomConstraint = NSLayoutConstraint(item: self.nextKeyboardButton, attribute: .bottom, relatedBy: .equal, toItem: self.view, attribute: .bottom, multiplier: 1.0, constant: 0.0)
         self.view.addConstraints([nextKeyboardButtonLeftSideConstraint, nextKeyboardButtonBottomConstraint])
     }
 
@@ -146,31 +146,28 @@ class KeyboardViewController: UIInputViewController, MTTouchesViewDeleagte {
         // Dispose of any resources that can be recreated
     }
 
-    override func textWillChange(textInput: UITextInput?) {
+    override func textWillChange(_ textInput: UITextInput?) {
         // The app is about to change the document's contents. Perform any preparation here.
     }
 
-    override func textDidChange(textInput: UITextInput?) {
+    override func textDidChange(_ textInput: UITextInput?) {
         // The app has just changed the document's contents, the document context has been updated.
     
         var textColor: UIColor
         let proxy = self.textDocumentProxy
-        if proxy.keyboardAppearance == UIKeyboardAppearance.Dark {
-            textColor = UIColor.whiteColor()
+        if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
+            textColor = UIColor.white
         } else {
-            textColor = UIColor.blackColor()
+            textColor = UIColor.black
         }
 //        self.nextKeyboardButton.setTitleColor(textColor, forState: .Normal)
     }
 }
 
 extension String {
-    
     var capitalizeFirst: String {
-        if isEmpty { return "" }
-        var result = self
-        result.replaceRange(startIndex...startIndex, with: String(self[startIndex]).uppercaseString)
-        return result
+        let first = String(characters.prefix(1)).capitalized
+        let other = String(characters.dropFirst())
+        return first + other
     }
-    
 }

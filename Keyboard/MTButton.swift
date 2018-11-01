@@ -31,11 +31,11 @@ class MTButton: UIButton {
     
     func initialie() {
         
-        setTitleColor(UIColor.keyColor(), forState: .Normal)
+        setTitleColor(UIColor.keyColor(), for: .normal)
         backgroundColor = UIColor.backgroundColor()
         layer.borderWidth = 0.5
-        layer.borderColor = UIColor.keyColor().CGColor
+        layer.borderColor = UIColor.keyColor().cgColor
         layer.cornerRadius = 5
-        titleLabel?.font = UIFont.systemFontOfSize(15)
+        titleLabel?.font = UIFont.systemFont(ofSize: 15)
     }
 }

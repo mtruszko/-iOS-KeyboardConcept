@@ -22,7 +22,7 @@ class MTTriangleFieldView: UIView {
         
         self.field = field
         self.parentBounds = parentBounds
-        self.userInteractionEnabled = true
+        self.isUserInteractionEnabled = true
         self.clipsToBounds = true
         
         layerPath = makeTriangularPath()
@@ -54,11 +54,11 @@ class MTTriangleFieldView: UIView {
             }
         }
         label.numberOfLines = 0
-        label.textAlignment = .Center
+        label.textAlignment = .center
         label.sizeToFit()
         label.center = middlePoint
         label.textColor = UIColor.backgroundColor()
-        label.userInteractionEnabled = false
+        label.isUserInteractionEnabled = false
         addSubview(label)
 
     }
@@ -69,10 +69,10 @@ class MTTriangleFieldView: UIView {
 
         let mask = CAShapeLayer()
         mask.frame = parentBounds
-        mask.fillColor = UIColor.keyColor().CGColor
-        mask.strokeColor = UIColor.backgroundColor().CGColor
+        mask.fillColor = UIColor.keyColor().cgColor
+        mask.strokeColor = UIColor.backgroundColor().cgColor
         mask.lineWidth = 3
-        mask.path = layerPath.CGPath
+        mask.path = layerPath.cgPath
         self.layer.addSublayer(mask)
         myLayer = mask
     }
@@ -85,23 +85,23 @@ class MTTriangleFieldView: UIView {
         
         let path = UIBezierPath()
         
-        let point0 = CGPointMake(parentBounds.width/2, parentBounds.height/2)
-        let point1 = CGPointMake(parentBounds.width * field.point1.x, parentBounds.height * field.point1.y)
-        let point2 = CGPointMake(parentBounds.width * field.point2.x, parentBounds.height * field.point2.y)
+        let point0 = CGPoint(x: parentBounds.width/2, y: parentBounds.height/2)
+        let point1 = CGPoint(x: parentBounds.width * field.point1.x, y: parentBounds.height * field.point1.y)
+        let point2 = CGPoint(x: parentBounds.width * field.point2.x, y: parentBounds.height * field.point2.y)
         
-        middlePoint = CGPointMake((point0.x + point1.x + point2.x)/3, (point0.y + point1.y + point2.y)/3)
+        middlePoint = CGPoint(x: (point0.x + point1.x + point2.x)/3, y: (point0.y + point1.y + point2.y)/3)
         
-        path.moveToPoint(point0)
-        path.addLineToPoint(point1)
-        path.addLineToPoint(point2)
-        path.closePath()
+        path.move(to: point0)
+        path.addLine(to: point1)
+        path.addLine(to: point2)
+        path.close()
 
         return path
     }
     
     func containPoint(point: CGPoint) -> Bool {
         
-        if layerPath.containsPoint(point) {
+        if layerPath.contains(point) {
 
             return true
         }
@@ -113,11 +113,11 @@ class MTTriangleFieldView: UIView {
         
         if  selected {
             
-            myLayer.fillColor = UIColor.keySelectedColor().CGColor
+            myLayer.fillColor = UIColor.keySelectedColor().cgColor
         }
         else {
             
-            myLayer.fillColor = UIColor.keyColor().CGColor
+            myLayer.fillColor = UIColor.keyColor().cgColor
         }
         
     }
