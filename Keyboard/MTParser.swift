@@ -30,7 +30,13 @@ class MTParser: NSObject, XMLParserDelegate {
     var xmlParser: XMLParser?
     let path = Bundle.main.path(forResource: "ViewKey", ofType: "xml")
     
-    func startParse(){
+    override init() {
+        print("parser init")
+        super.init()
+    }
+    
+    func startParse(completion: @escaping ()->()){
+        parseCompleted = completion
         
         if path != nil {
             
@@ -47,7 +53,7 @@ class MTParser: NSObject, XMLParserDelegate {
     }
     
 //MARK: NSXMLParserDelegate
-    
+    var parseCompleted: (()->())? = nil
     var arrayKeyboard = [MTKeyboard]()
     var currentKeyboard:MTKeyboard!
     
@@ -55,7 +61,7 @@ class MTParser: NSObject, XMLParserDelegate {
     //helper for duplicate keys
     var currentPoint = String()
     
-    func parser(parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         
         if let key = MTPropertyType(rawValue: elementName){
         
@@ -83,7 +89,7 @@ class MTParser: NSObject, XMLParserDelegate {
     var entryExternal = String()
     var entryTo = String()
     
-    func parser(parser: XMLParser, foundCharacters string: String) {
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
        
         if let key = MTPropertyType(rawValue: currentParsedElement) {
             
@@ -123,7 +129,7 @@ class MTParser: NSObject, XMLParserDelegate {
         }
     }
     
-    func parser(parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         
         if let key = MTPropertyType(rawValue: elementName) {
             
@@ -156,13 +162,18 @@ class MTParser: NSObject, XMLParserDelegate {
         currentParsedElement = ""
     }
     
-    func parserDidEndDocument(parser: XMLParser) {
-        
+    func parserDidEndDocument(_ parser: XMLParser) {
+        parseCompleted?()
         print("FinishedParse")
     }
     
-    func parser(parser: XMLParser, parseErrorOccurred parseError: NSError) {
+    func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
+        parseCompleted?()
         print("ERROR \(parseError)")
+    }
+    
+    func parserDidStartDocument(_ parser: XMLParser) {
+        print("did Start")
     }
 }
 

@@ -19,15 +19,15 @@ class KeyboardViewController: UIInputViewController, MTTouchesViewDeleagte {
     var keybord:MTKeyboard?
     @IBOutlet weak var touchesView: MTTouchesView!
     
+    let parser = MTParser()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(customInterface)
         
-        if let parser:MTParser = MTParser() {
-            
-            parser.startParse()
-            print("\(parser.arrayKeyboard)")
-            keybord = parser.arrayKeyboard[0]
+        parser.startParse {
+            print("\(self.parser.arrayKeyboard)")
+            self.keybord = self.parser.arrayKeyboard[0]
         }
         
         addNextKeyboardButton()
